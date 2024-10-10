@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Declaramos el conjunto de caracteres como UTF-8 -->
+    <meta charset="UTF-8">
+    <!-- Configuramos la vista para adaptarse a dispositivos móviles -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Título de la página que aparece en la pestaña del navegador -->
+    <title>Cronómetro</title>
+    <style>
+        /* Estilos generales para el cuerpo de la página */
+        body {
+            font-family: 'Arial', sans-serif; /* Establece la fuente Arial para todo el cuerpo */
+            display: flex; /* Usa flexbox para organizar los elementos */
+            justify-content: center; /* Centra horizontalmente */
+            align-items: center; /* Centra verticalmente */
+            height: 100vh; /* El alto de la página es 100% del alto de la ventana */
+            margin: 0; /* Elimina márgenes predeterminados */
+            background-color: #333; /* Establece el fondo del cuerpo a un gris fuerte */
+        }
+
+        /* Estilos para el contenedor principal del cronómetro */
+        .cronometro-container {
+            text-align: center; /* Centra el texto dentro del contenedor */
+            background-color: white; /* Fondo blanco para el cronómetro */
+            padding: 30px; /* Relleno interno de 30px */
+            border-radius: 20px; /* Bordes redondeados */
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1); /* Sombra sutil para el contenedor */
+        }
+
+        /* Estilos para el título "Cronómetro" */
+        h1 {
+            font-size: 24px; /* Tamaño de la fuente */
+            color: #333; /* Color del texto */
+            margin-bottom: 20px; /* Espacio debajo del título */
+        }
+
+        /* Estilos para el cronómetro en sí */
+        #cronometro {
+            font-size: 64px; /* Tamaño grande de la fuente */
+            margin-bottom: 30px; /* Espacio debajo del cronómetro */
+            font-weight: bold; /* Fuente en negrita */
+            color: #333; /* Color gris oscuro para el texto */
+        }
+
+        /* Estilos para los botones que controlan el cronómetro */
+        .botones {
+            display: flex; /* Usa flexbox para organizar los botones */
+            justify-content: center; /* Centra los botones horizontalmente */
+            gap: 15px; /* Espacio de 15px entre cada botón */
+        }
+
+        /* Estilos generales para cada botón */
+        .botones button {
+            padding: 15px 25px; /* Relleno interno de 15px vertical y 25px horizontal */
+            font-size: 20px; /* Tamaño de la fuente */
+            border-radius: 10px; /* Bordes redondeados para los botones */
+            border: none; /* Sin borde visible */
+            cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+            transition: background-color 0.3s ease; /* Transición suave al cambiar el color de fondo */
+        }
+
+        /* Estilos específicos para el botón de iniciar */
+        #start {
+            background-color: #4CAF50; /* Color de fondo verde */
+            color: white; /* Color del texto blanco */
+        }
+
+        /* Estilo de hover (cuando se pasa el ratón) para el botón de iniciar */
+        #start:hover {
+            background-color: #45a049; /* Color de fondo ligeramente más oscuro cuando se pasa el ratón */
+        }
+
+        /* Estilos específicos para el botón de pausar */
+        #pause {
+            background-color: #FFC107; /* Color de fondo amarillo */
+            color: white; /* Color del texto blanco */
+        }
+
+        /* Estilo de hover para el botón de pausar */
+        #pause:hover {
+            background-color: #e0a800; /* Color de fondo más oscuro al pasar el ratón */
+        }
+
+        /* Estilos específicos para el botón de reiniciar */
+        #reset {
+            background-color: #f44336; /* Color de fondo rojo */
+            color: white; /* Color del texto blanco */
+        }
+
+        /* Estilo de hover para el botón de reiniciar */
+        #reset:hover {
+            background-color: #d32f2f; /* Color de fondo más oscuro al pasar el ratón */
+        }
+    </style>
+</head>
+<body>
+    <!-- Contenedor principal que incluye el título y el cronómetro -->
+    <div class="cronometro-container">
+        <!-- Título "Cronómetro" que aparece arriba del cronómetro -->
+        <h1>Cronómetro</h1>
+        <!-- El cronómetro que muestra el tiempo -->
+        <h2 id="cronometro">00:00:00</h2>
+        <!-- Botones para controlar el cronómetro (Iniciar, Pausar, Reiniciar) -->
+        <div class="botones">
+            <button id="start">Iniciar</button>
+            <button id="pause">Pausar</button>
+            <button id="reset">Reiniciar</button>
+        </div>
+    </div>
+
+    <script>
+        // Variables para llevar la cuenta de segundos, minutos y horas
+        let segundos = 0;
+        let minutos = 0;
+        let horas = 0;
+        let interval;
+
+        // Referencias a los elementos del cronómetro y botones en el DOM
+        const cronometro = document.getElementById('cronometro');
+        const startButton = document.getElementById('start');
+        const pauseButton = document.getElementById('pause');
+        const resetButton = document.getElementById('reset');
+
+        // Función para actualizar el cronómetro cada segundo
+        function actualizarCronometro() {
+            segundos++; // Incrementa los segundos
+
+            // Si los segundos alcanzan 60, los resetea y suma un minuto
+            if (segundos >= 60) {
+                segundos = 0;
+                minutos++;
+            }
+
+            // Si los minutos alcanzan 60, los resetea y suma una hora
+            if (minutos >= 60) {
+                minutos = 0;
+                horas++;
+            }
+
+            // Actualiza el contenido del cronómetro con el tiempo formateado
+            cronometro.textContent = 
+                (horas < 10 ? '0' + horas : horas) + ':' + 
+                (minutos < 10 ? '0' + minutos : minutos) + ':' + 
+                (segundos < 10 ? '0' + segundos : segundos);
+        }
+
+        // Evento que se activa cuando se hace clic en el botón "Iniciar"
+        startButton.addEventListener('click', () => {
+            if (!interval) { // Si no está corriendo un intervalo
+                interval = setInterval(actualizarCronometro, 1000); // Inicia el cronómetro cada segundo
+            }
+        });
+
+        // Evento que se activa cuando se hace clic en el botón "Pausar"
+        pauseButton.addEventListener('click', () => {
+            clearInterval(interval); // Detiene el cronómetro
+            interval = null; // Resetea la variable del intervalo
+        });
+
+        // Evento que se activa cuando se hace clic en el botón "Reiniciar"
+        resetButton.addEventListener('click', () => {
+            clearInterval(interval); // Detiene el cronómetro
+            interval = null; // Resetea la variable del intervalo
+            segundos = 0; // Resetea los segundos
+            minutos = 0; // Resetea los minutos
+            horas = 0; // Resetea las horas
+            cronometro.textContent = '00:00:00'; // Muestra el cronómetro reiniciado
+        });
+    </script>
+</body>
+</html>
